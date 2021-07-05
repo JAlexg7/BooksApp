@@ -1,47 +1,72 @@
-﻿using System;
+﻿using BooksApp.Data;
+using BooksApp.Domain;
+using System;
+using System.Linq;
 
 namespace ConsoleApp
 {
     class Program
     {
+        private static BooksContext context = new BooksContext();
         static void Main(string[] args)
         {
-            char lectura; do
+            context.Database.EnsureCreated();
+            char lectura;
+            do
             {
-                Console.WriteLine("[A]gregar autor | [M]odificar autor | [E]liminar autor | [V]er autores | [S]alir");
-                Console.Write("Selecciona una opción: ");
-                lectura = Char.ToUpper(Console.ReadKey().KeyChar);
+                Console.WriteLine("[A]gregar autor | [M]odificar autor | [E]liminar autor |" +
+                    " [V]er autores | [S]alir");
+                Console.Write("Selecciona una opción: "); 
+                lectura = Char.ToUpper(Console.ReadKey().KeyChar); 
                 Console.WriteLine();
-                switch (lectura)
-                {
-                    case 'A':
-                        AddAuthor();
+                switch (lectura) 
+                { 
+                    case 'A': 
+                        AddAuthor(); 
                         break;
-                    case 'M':
-                        ModifyAuthor();
+                    case 'M': 
+                        ModifyAuthor(); 
                         break;
-                    case 'E':
-                        DeleteAuthor();
+                    case 'E': 
+                        DeleteAuthor(); 
                         break;
                     case 'V':
-                        ShowAuthors();
+                        ShowAuthors("Autores registrados"); 
+                        break; 
+                    case 'S': 
+                        Console.WriteLine("Adiós. Programa finalizado."); 
                         break;
-                    case 'S':
-                        Console.WriteLine("Adiós. Programa finalizado.");
-                        break;
-                    default:
-                        break;
+                    default: 
+                        break; 
                 }
                 Console.WriteLine();
-            } while (lectura != 'S'); Console.WriteLine("");
-        }
+            } while (lectura != 'S');
+            Console.WriteLine("");
 
-        static void AddAuthor() { Console.WriteLine("Agregando un autor..."); }
+        }
+        static void AddAuthor() { 
+            Console.WriteLine("Agregando un autor...");
+            Console.Write("Nombres: "); 
+            string firstName = Console.ReadLine(); Console.Write("Apellidos: "); string lastName = Console.ReadLine(); 
+            var author = new Author {
+                FirstName = firstName,
+                LastName = lastName 
+            }; 
+            context.Authors.Add(author);
+            context.SaveChanges();
+        }
         static void ModifyAuthor() { Console.WriteLine("Modificando un autor..."); }
         static void DeleteAuthor() { Console.WriteLine("Eliminando un autor..."); }
-        static void ShowAuthors()
+        static void ShowAuthors(string text)
         {
-            Console.WriteLine("Mostrando autores...");
+            var authors = context.Authors.ToList();
+
+            Console.WriteLine($"{text}: Se han registrado {authors.Count} autores."); foreach (var author in authors)
+            foreach (var Author in authors)
+                { Console.WriteLine(author.FirstName + " " + author.LastName); 
+                }
         }
     }
 }
+
+        
